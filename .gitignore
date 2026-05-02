@@ -1,0 +1,66 @@
+# ─────────────────────────────────────────────────────────────
+# .gitignore untuk proyek YOLOv8 Road Damage + Helmet Detection
+# ─────────────────────────────────────────────────────────────
+
+# ── Dataset (JANGAN push ke GitHub — terlalu besar) ──────────
+datasets/
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.webp
+*.mp4
+*.avi
+*.mov
+
+# ── YOLO training output ──────────────────────────────────────
+runs/
+weights/
+*.pt
+*.onnx
+*.torchscript
+
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Jupyter Notebook ──────────────────────────────────────────
+.ipynb_checkpoints/
+.ipynb_checkpoints/
+
+# ── Environment ───────────────────────────────────────────────
+.env
+.env.local
+*.env
+
+# ── IDE ───────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+mlruns/
+wandb/
+
+# ── Backend build ─────────────────────────────────────────────
+backend/__pycache__/
+backend/.venv/
+
+# ── Frontend build ────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.next/
