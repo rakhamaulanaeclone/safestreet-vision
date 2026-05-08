@@ -2,8 +2,9 @@
 # .gitignore untuk proyek YOLOv8 Road Damage + Helmet Detection
 # ─────────────────────────────────────────────────────────────
 
-# ── Dataset (JANGAN push ke GitHub — terlalu besar) ──────────
+# ── Dataset ──────────
 datasets/
+!datasets/merged/data.yaml
 *.jpg
 *.jpeg
 *.png
@@ -33,7 +34,6 @@ build/
 .eggs/
 
 # ── Jupyter Notebook ──────────────────────────────────────────
-.ipynb_checkpoints/
 .ipynb_checkpoints/
 
 # ── Environment ───────────────────────────────────────────────
