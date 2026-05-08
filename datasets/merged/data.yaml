@@ -1,0 +1,15 @@
+names:
+- pothole
+- crack
+- manhole
+- speed_bump
+- vehicle_small
+- vehicle_large
+- pedestrian
+- with_helmet
+- without_helmet
+nc: 9
+path: C:\Users\R4kha\projects\SafeStreet Vision\datasets\merged
+test: images/test
+train: images/train
+val: images/val
