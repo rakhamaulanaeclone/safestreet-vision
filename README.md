@@ -1,121 +1,191 @@
 # SafeStreet Vision
 
-Real-time detection of **road damage** and **motorcycle helmet usage** using YOLOv8.
+Real-time object detection for road damage and motorcycle helmet usage using YOLOv8.
 
-## Overview
+SafeStreet Vision is an end-to-end machine learning portfolio project. The current phase focuses on dataset engineering, YOLOv8 training, and evaluation artifacts before moving into the FastAPI backend and React frontend.
 
-A single YOLOv8 model that detects 9 classes simultaneously from dashcam or CCTV footage:
+## Classes
+
+A single YOLOv8 model detects 9 classes:
 
 | ID | Class | Source |
-|----|-------|--------|
-| 0 | `pothole` | Road Damage Dataset |
-| 1 | `crack` | Road Damage Dataset |
-| 2 | `manhole` | Road Damage Dataset |
+|---:|---|---|
+| 0 | `pothole` | RoadDamage Italy |
+| 1 | `crack` | RoadDamage Italy |
+| 2 | `manhole` | RoadDamage Italy |
 | 3 | `speed_bump` | RAD India |
 | 4 | `vehicle_small` | RAD India |
 | 5 | `vehicle_large` | RAD India |
 | 6 | `pedestrian` | RAD India |
-| 7 | `with_helmet` | Deteksi Helm + helm motor |
-| 8 | `without_helmet` | Deteksi Helm + helm motor |
+| 7 | `with_helmet` | HelmetMain + HelmetSupp |
+| 8 | `without_helmet` | HelmetMain + HelmetSupp |
 
-## Dataset Statistics
+## Dataset
+
+Datasets are not included in this repository due to size and licensing. Place them under `datasets/` before running the merge pipeline.
 
 | Split | Images | Labels |
-|-------|--------|--------|
+|---|---:|---:|
 | Train | 9,377 | 9,377 |
 | Val | 2,041 | 2,041 |
 | Test | 1,705 | 1,705 |
-| **Total** | **13,123** | **13,123** |
+| Total | 13,123 | 13,123 |
 
-Total annotations: 35,780 across 9 classes
-
-### Dataset Sources
+Total annotations: 35,780 across 9 classes.
 
 | Dataset | Source | Images | License |
-|---------|--------|--------|---------|
-| RAD Road Anomaly Detection | Kaggle (Rohit Suresh15) | 8,394 | MIT |
-| Road Damage: Potholes, Cracks, Manholes | Kaggle (Lorenzo Arcioni) | 2,009 | MIT |
+|---|---|---:|---|
+| RAD Road Anomaly Detection | Kaggle, Rohit Suresh15 | 8,394 | MIT |
+| Road Damage: Potholes, Cracks, Manholes | Kaggle, Lorenzo Arcioni | 2,009 | MIT |
 | Deteksi Helm | Roboflow Universe | 3,169 | CC BY 4.0 |
-| helm motor (ox1de) | Roboflow Universe | 152 | CC BY 4.0 |
-
-Datasets are not included in this repository due to size. Download manually and place in `datasets/` following the structure below.
+| helm motor | Roboflow Universe, ox1de | 152 | CC BY 4.0 |
 
 ## Project Structure
 
-```
+```text
 SafeStreet Vision/
-├── datasets/                  (NOT pushed to GitHub)
-│   ├── RAD/
-│   ├── RoadDamage/
-│   ├── HelmetMain/
-│   ├── HelmetSupp/
-│   └── merged/
-│       ├── images/
-│       │   ├── train/
-│       │   ├── val/
-│       │   └── test/
-│       ├── labels/
-│       │   ├── train/
-│       │   ├── val/
-│       │   └── test/
-│       └── data.yaml
-├── scripts/
-│   ├── merge_datasets.py
-│   ├── merge_helmet.py
-│   ├── validate_dataset.py
-│   └── clean_orphans.py
-├── backend/                   (coming soon)
-├── frontend/                  (coming soon)
-├── .gitignore
-└── README.md
+|-- datasets/                  # ignored except datasets/merged/data.yaml
+|   |-- RAD/
+|   |-- RoadDamage/
+|   |-- HelmetMain/
+|   |-- HelmetSupp/
+|   `-- merged/
+|       |-- images/train, val, test/
+|       |-- labels/train, val, test/
+|       `-- data.yaml
+|-- runs/                      # ignored YOLO training/evaluation outputs
+|-- scripts/
+|   |-- merge_datasets.py
+|   |-- merge_helmet.py
+|   |-- validate_dataset.py
+|   |-- cleanup_orphans.py
+|   |-- train.py
+|   |-- evaluate.py
+|   |-- export_model.py
+|   `-- verify_onnx.py
+|-- .gitignore
+`-- README.md
 ```
 
 ## Setup
 
 ```bash
-git clone https://github.com/username/safestreet-vision.git
-cd safestreet-vision
-
-python -m venv .venv
-.venv\Scripts\activate
-
-pip install ultralytics pyyaml
+python -m venv .venv311
+.venv311\Scripts\activate
+pip install ultralytics pyyaml opencv-python
+pip install onnx onnxruntime
 ```
 
 ## Dataset Pipeline
 
 ```bash
-python scripts/merge_datasets.py    # Step 1: Merge road damage datasets
-python scripts/merge_helmet.py      # Step 2: Add helmet datasets
-python scripts/validate_dataset.py  # Step 3: Validate
-python scripts/clean_orphans.py     # Step 4: Remove orphan images
-python scripts/validate_dataset.py  # Step 5: Final validation
+python scripts/merge_datasets.py
+python scripts/merge_helmet.py
+python scripts/validate_dataset.py
+python scripts/cleanup_orphans.py
+python scripts/validate_dataset.py
 ```
 
-## Tech Stack
+`cleanup_orphans.py` only deletes orphan images from `datasets/merged`. It does not delete source dataset files, so the pipeline remains reproducible.
 
-- **ML Model:** YOLOv8 (Ultralytics)
-- **Backend:** FastAPI + WebSocket
-- **Frontend:** React + Canvas API
-- **Training:** Google Colab
+## Training
+
+Training was run locally with:
+
+| Item | Value |
+|---|---|
+| Model | YOLOv8s |
+| Pretrained weights | `yolov8s.pt` |
+| Epochs | 100 |
+| Batch size | 16 |
+| Image size | 640 |
+| Hardware | NVIDIA RTX 2060 Super 8GB |
+| Python | 3.11.9 |
+| PyTorch | 2.5.1+cu121 |
+| Ultralytics | 8.4.48 |
+
+```bash
+python scripts/train.py
+```
+
+Model weights and training outputs are ignored by Git.
 
 ## Model Performance
 
-| Metric | Value |
-|--------|-------|
-| mAP@50 | TBD (after training) |
-| mAP@50-95 | TBD |
-| Inference CPU | ~100-150ms |
-| Inference GPU | ~10-20ms |
+Metrics for `runs/safestreet_v1_2/weights/best.pt`:
 
-## Credits
+| Split | Images | Instances | Precision | Recall | mAP@50 | mAP@50-95 |
+|---|---:|---:|---:|---:|---:|---:|
+| Validation | 2,041 | 5,587 | 0.773 | 0.774 | 0.802 | 0.463 |
+| Test | 1,705 | 4,732 | 0.825 | 0.747 | 0.789 | 0.447 |
 
-- RAD Dataset — Rohit Suresh15 (Kaggle)
-- Road Damage Dataset — Lorenzo Arcioni (Kaggle)
-- Deteksi Helm — Roboflow Universe
-- helm motor — ox1de (Roboflow Universe)
+Per-class mAP summary:
+
+| Class | Val instances | Val mAP@50 | Val mAP@50-95 | Test instances | Test mAP@50 | Test mAP@50-95 |
+|---|---:|---:|---:|---:|---:|---:|
+| pothole | 134 | 0.539 | 0.206 | 129 | 0.460 | 0.187 |
+| crack | 286 | 0.317 | 0.119 | 272 | 0.363 | 0.117 |
+| manhole | 95 | 0.697 | 0.341 | 92 | 0.724 | 0.302 |
+| speed_bump | 83 | 0.940 | 0.479 | 70 | 0.829 | 0.398 |
+| vehicle_small | 2,201 | 0.960 | 0.624 | 2,158 | 0.957 | 0.617 |
+| vehicle_large | 672 | 0.974 | 0.729 | 647 | 0.983 | 0.728 |
+| pedestrian | 549 | 0.915 | 0.486 | 561 | 0.915 | 0.488 |
+| with_helmet | 1,278 | 0.938 | 0.577 | 653 | 0.929 | 0.575 |
+| without_helmet | 289 | 0.941 | 0.605 | 150 | 0.940 | 0.611 |
+
+The weakest classes are still `crack` and `pothole`, especially under stricter mAP@50-95. This is expected from thin/low-contrast crack geometry, small validation/test support for road-damage classes, and domain variation across source datasets.
+
+## Evaluation
+
+Run validation or test evaluation from the project root:
+
+```bash
+python scripts/evaluate.py --split val --device 0
+python scripts/evaluate.py --split test --device 0
+python scripts/evaluate.py --split all --device 0
+```
+
+The evaluation script saves metrics, per-class CSV, Markdown summaries, confusion matrix CSV, Ultralytics plots, and prediction samples under `runs/evaluation_*`.
+
+## ONNX Export
+
+Export `best.pt` to ONNX:
+
+```bash
+python scripts/export_model.py --device 0
+```
+
+The exported ONNX model is saved as `runs/safestreet_v1_2/weights/best.onnx`. This file is ignored by Git.
+
+Verify ONNX inference against the PyTorch model on the same image:
+
+```bash
+python scripts/verify_onnx.py --image datasets/merged/images/test/rad_51_13-06-2023_mp4-23_jpg.rf.9854b4961e9c2debab4fdee09206f2c9.jpg --pt-device 0 --onnx-device cpu
+```
+
+Latest verification result:
+
+| Check | Result |
+|---|---:|
+| PyTorch detections | 4 |
+| ONNX detections | 4 |
+| Matched top classes | 4 / 4 |
+| Max confidence delta | 0.0056 |
+| Max box coordinate delta | 1.49 px |
+| Coarse match | true |
+
+## Roadmap
+
+- Phase 0: Dataset pipeline - complete
+- Phase 1: YOLOv8 training - complete
+- Phase 2: Evaluation and export - complete
+- Phase 3: FastAPI backend - planned
+- Phase 4: React frontend - planned
+- Phase 5: Docker Compose and integration - planned
+- Phase 6: Deployment and portfolio polish - planned
 
 ## License
 
 Code: MIT
-Datasets: see Dataset Sources table (CC BY 4.0 attribution required for Roboflow datasets)
+
+Datasets: see the Dataset table. Roboflow datasets require CC BY 4.0 attribution.

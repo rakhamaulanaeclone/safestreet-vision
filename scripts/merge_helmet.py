@@ -47,6 +47,7 @@ MERGED        = ROOT / "datasets" / "merged"
 #  HelmetSupp data.yaml:
 #    0: With Helmet  -> 7: with_helmet
 #    1: Without Helmet -> 8: without_helmet
+#    2: helmet -> 7: with_helmet
 # ══════════════════════════════════════════════════
  
 HELMET_MAIN_MAP = {
@@ -57,6 +58,7 @@ HELMET_MAIN_MAP = {
 HELMET_SUPP_MAP = {
     0: 7,   # With Helmet    -> with_helmet
     1: 8,   # Without Helmet -> without_helmet
+    2: 7,   # helmet         -> with_helmet
 }
  
 # Kelas final lengkap setelah penggabungan
@@ -188,6 +190,7 @@ def update_yaml():
         isi = yaml.safe_load(f)
  
     # Update kelas
+    isi["path"]  = "datasets/merged"
     isi["nc"]    = len(CLASS_NAMES_FINAL)
     isi["names"] = CLASS_NAMES_FINAL
  

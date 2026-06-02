@@ -242,7 +242,7 @@ def tulis_merged(semua: dict):
  
 def buat_yaml():
     isi = {
-        "path":  str(OUTPUT.resolve()),
+        "path":  "datasets/merged",
         "train": "images/train",
         "val":   "images/val",
         "test":  "images/test",

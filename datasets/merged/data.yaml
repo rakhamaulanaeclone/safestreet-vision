@@ -9,7 +9,7 @@ names:
 - with_helmet
 - without_helmet
 nc: 9
-path: C:\Users\R4kha\projects\SafeStreet Vision\datasets\merged
+path: datasets/merged
 test: images/test
 train: images/train
 val: images/val

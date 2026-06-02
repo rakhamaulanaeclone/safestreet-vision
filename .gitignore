@@ -3,7 +3,9 @@
 # ─────────────────────────────────────────────────────────────
 
 # ── Dataset ──────────
-datasets/
+datasets/*
+!datasets/merged/
+datasets/merged/*
 !datasets/merged/data.yaml
 *.jpg
 *.jpeg
@@ -26,6 +28,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 .venv/
+.venv311/
 venv/
 env/
 *.egg-info/
@@ -40,6 +43,10 @@ build/
 .env
 .env.local
 *.env
+
+# Local notes / nested working copies
+SafeStreet Vision.md
+github-git/
 
 # ── IDE ───────────────────────────────────────────────────────
 .vscode/settings.json
