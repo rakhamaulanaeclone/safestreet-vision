@@ -2,7 +2,7 @@
 
 Real-time object detection for road damage and motorcycle helmet usage using YOLOv8.
 
-SafeStreet Vision is an end-to-end machine learning portfolio project. The current phase focuses on dataset engineering, YOLOv8 training, and evaluation artifacts before moving into the FastAPI backend and React frontend.
+SafeStreet Vision is an end-to-end machine learning portfolio project. The current version includes dataset engineering, YOLOv8 training/evaluation, ONNX export, and a FastAPI inference backend.
 
 ## Classes
 
@@ -54,6 +54,15 @@ SafeStreet Vision/
 |       |-- labels/train, val, test/
 |       `-- data.yaml
 |-- runs/                      # ignored YOLO training/evaluation outputs
+|-- backend/
+|   |-- app/
+|   |   |-- main.py
+|   |   |-- config.py
+|   |   |-- model.py
+|   |   |-- schemas.py
+|   |   `-- utils.py
+|   |-- requirements.txt
+|   `-- README.md
 |-- scripts/
 |   |-- merge_datasets.py
 |   |-- merge_helmet.py
@@ -74,6 +83,7 @@ python -m venv .venv311
 .venv311\Scripts\activate
 pip install ultralytics pyyaml opencv-python
 pip install onnx onnxruntime
+pip install -r backend/requirements.txt
 ```
 
 ## Dataset Pipeline
@@ -174,12 +184,38 @@ Latest verification result:
 | Max box coordinate delta | 1.49 px |
 | Coarse match | true |
 
+## FastAPI Backend
+
+Run the inference API from the project root:
+
+```bash
+uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Available endpoints:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/health` | Backend health and model availability |
+| GET | `/model/info` | Model path, class names, thresholds, and device |
+| POST | `/predict/image` | Image upload inference |
+| POST | `/predict/video-frame` | Same inference path for frontend video frames |
+
+Validated HTTP sample for `/predict/image` using a test image:
+
+| Check | Result |
+|---|---:|
+| Detections | 4 |
+| Image size | 1920 x 1080 |
+| First class | `vehicle_small` |
+| First confidence | 0.8188 |
+
 ## Roadmap
 
 - Phase 0: Dataset pipeline - complete
 - Phase 1: YOLOv8 training - complete
 - Phase 2: Evaluation and export - complete
-- Phase 3: FastAPI backend - planned
+- Phase 3: FastAPI backend - complete
 - Phase 4: React frontend - planned
 - Phase 5: Docker Compose and integration - planned
 - Phase 6: Deployment and portfolio polish - planned
