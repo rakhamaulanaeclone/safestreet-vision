@@ -10,6 +10,9 @@ datasets/merged/*
 *.jpg
 *.jpeg
 *.png
+*.jpg
+*.jpeg
+*.png
 *.bmp
 *.webp
 *.mp4
@@ -17,11 +20,17 @@ datasets/merged/*
 *.mov
 
 # ── YOLO training output ──────────────────────────────────────
-runs/
+runs/*
 weights/
 *.pt
 *.onnx
-*.torchscript
+
+!runs/README_ONNX_FIX.md
+!runs/safestreet_v1_2/
+runs/safestreet_v1_2/*
+!runs/safestreet_v1_2/weights/
+runs/safestreet_v1_2/weights/*
+!runs/safestreet_v1_2/weights/best.onnx
 
 # ── Python ────────────────────────────────────────────────────
 __pycache__/

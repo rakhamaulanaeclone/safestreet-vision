@@ -9,7 +9,7 @@ import torch
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MODEL_PATH = PROJECT_ROOT / "runs" / "safestreet_v1_2" / "weights" / "best.pt"
+DEFAULT_MODEL_PATH = PROJECT_ROOT / "runs" / "safestreet_v1_2" / "weights" / "best.onnx"
 
 CLASS_NAMES = [
     "pothole",
@@ -73,7 +73,7 @@ def get_settings() -> Settings:
         model_path=Path(os.getenv("SAFESTREET_MODEL_PATH", str(DEFAULT_MODEL_PATH))).resolve(),
         device=_device(),
         imgsz=_int_env("SAFESTREET_IMGSZ", 640),
-        conf=_float_env("SAFESTREET_CONF", 0.25),
+        conf=_float_env("SAFESTREET_CONF", 0.15),
         iou=_float_env("SAFESTREET_IOU", 0.7),
         max_upload_mb=_int_env("SAFESTREET_MAX_UPLOAD_MB", 15),
         cors_origins=cors_origins,

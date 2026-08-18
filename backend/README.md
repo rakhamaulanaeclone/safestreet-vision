@@ -100,3 +100,50 @@ First detection from the validated sample:
 ### `POST /predict/video-frame`
 
 Same behavior as `/predict/image`, intended for frontend video frame uploads.
+
+
+• Fase 3 backend FastAPI sudah selesai dan sudah di-commit.
+
+  Commit:
+  372b3d8 feat: add FastAPI inference backend
+
+  Yang dibuat:
+
+  - backend/app/main.py
+  - backend/app/config.py
+  - backend/app/model.py
+  - backend/app/schemas.py
+  - backend/app/utils.py
+  - backend/requirements.txt
+  - backend/README.md
+  - README root diupdate dengan status backend dan endpoint API
+
+  Endpoint tersedia:
+
+  - GET /health
+  - GET /model/info
+  - POST /predict/image
+  - POST /predict/video-frame
+
+  Validasi yang sudah dijalankan:
+
+  - uvicorn foreground dijalankan; sempat terlihat error bind karena ada proses lama di port 8000, lalu proses lama dihentikan.
+  - HTTP biasa via Invoke-RestMethod:
+      - /health OK
+      - /model/info OK, model best.pt berhasil load, 9 class terbaca
+
+  - HTTP biasa via curl.exe:
+      - /predict/image OK
+      - sample test menghasilkan 4 deteksi
+      - image size 1920x1080
+      - first detection vehicle_small, confidence 0.8188
+
+  Cek akhir:
+
+  - compileall backend OK
+  - git diff --cached --check OK sebelum commit
+  - port 8000 kosong setelah testing
+  - working tree bersih
+  - branch develop sekarang ahead 1 dari origin/develop, jadi commit backend belum di-push.
+
+  Langkah berikutnya: push commit backend ke GitHub, lalu lanjut Fase 4: React frontend.

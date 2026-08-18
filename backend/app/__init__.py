@@ -1,1 +1,1 @@
-"""SafeStreet Vision FastAPI backend package."""
+"""SafeStreet Vision FastAPI backend app package."""

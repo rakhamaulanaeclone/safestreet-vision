@@ -72,13 +72,17 @@ class SafeStreetDetector:
         detections: list[Detection] = []
         if result.boxes is not None:
             for box in result.boxes:
+                confidence = float(box.conf[0])
+                if confidence < self.settings.conf:
+                    continue
+                    
                 class_id = int(box.cls[0])
                 x1, y1, x2, y2 = [float(v) for v in box.xyxy[0].tolist()]
                 detections.append(
                     Detection(
                         class_id=class_id,
                         class_name=self._class_name(class_id),
-                        confidence=float(box.conf[0]),
+                        confidence=confidence,
                         box=Box(x1=x1, y1=y1, x2=x2, y2=y2),
                     )
                 )
