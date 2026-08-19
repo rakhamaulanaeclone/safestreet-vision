@@ -62,7 +62,13 @@ SafeStreet Vision/
 |   |   |-- schemas.py
 |   |   `-- utils.py
 |   |-- requirements.txt
+|   |-- Dockerfile
 |   `-- README.md
+|-- frontend/
+|   |-- src/
+|   |-- package.json
+|   `-- Dockerfile
+|-- docker-compose.yml
 |-- scripts/
 |   |-- merge_datasets.py
 |   |-- merge_helmet.py
@@ -210,14 +216,32 @@ Validated HTTP sample for `/predict/image` using a test image:
 | First class | `vehicle_small` |
 | First confidence | 0.8188 |
 
+## Docker Deployment
+
+The complete application (FastAPI backend + Next.js frontend) is containerized and orchestrated using Docker Compose. The backend automatically mounts the localized YOLOv8 ONNX model from the `runs/` directory.
+
+To build and run the services:
+
+```bash
+docker compose up --build
+```
+
+- **Frontend:** http://localhost:5173 (Mapped from container port 3000)
+- **Backend API:** http://localhost:8000
+
+Features included in the frontend:
+- **Real-time Inference:** Access your webcam directly from the browser.
+- **Bilingual Support (EN/ID):** Toggle interface language and localized bounding box labels dynamically.
+- **Image Export:** Download the annotated image with predictions straight to your device.
+
 ## Roadmap
 
 - Phase 0: Dataset pipeline - complete
 - Phase 1: YOLOv8 training - complete
 - Phase 2: Evaluation and export - complete
 - Phase 3: FastAPI backend - complete
-- Phase 4: React frontend - planned
-- Phase 5: Docker Compose and integration - planned
+- Phase 4: React frontend - complete
+- Phase 5: Docker Compose and integration - complete
 - Phase 6: Deployment and portfolio polish - planned
 
 ## License

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, ChangeEvent, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Types
 type Box = { x1: number; y1: number; x2: number; y2: number };
@@ -66,6 +67,7 @@ const matchDetections = (
 };
 
 export default function Detector() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<"image" | "camera">("image");
 
   // Image Upload State
@@ -135,7 +137,7 @@ export default function Detector() {
       }
     } catch (err: any) {
       if (isMounted.current) {
-        setError("Camera access denied or not available. (Jika di HP, pastikan Anda menggunakan HTTPS atau Localhost). " + err.message);
+        setError(t("detect.error") + " " + err.message);
         setIsLive(false);
       }
     }
@@ -253,10 +255,55 @@ export default function Detector() {
       const data = await response.json();
       if (isMounted.current) setResult(data);
     } catch (err: any) {
-      if (isMounted.current) setError(err.message || "Failed to process image. Ensure backend is running.");
+      if (isMounted.current) setError(err.message || t("detect.error"));
     } finally {
       if (isMounted.current) setLoading(false);
     }
+  };
+
+  const handleDownloadImage = () => {
+    if (!preview || !result) return;
+    const img = new window.Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0);
+
+      // Draw bounding boxes
+      result.detections.forEach(det => {
+        const { x1, y1, x2, y2 } = det.box;
+        const color = CLASS_COLORS[det.class_name] || "#ffffff";
+        
+        // Rect
+        ctx.strokeStyle = color;
+        ctx.lineWidth = Math.max(2, img.width / 400);
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        
+        // Background for text
+        const fontSize = Math.max(14, img.width / 50);
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        const translatedLabel = t(`label.${det.class_name}`);
+        const text = `${translatedLabel} ${Math.round(det.confidence * 100)}%`;
+        
+        const textWidth = ctx.measureText(text).width;
+        ctx.fillStyle = color;
+        ctx.fillRect(x1, y1 - fontSize - 6, textWidth + 8, fontSize + 6);
+        
+        // Text
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(text, x1 + 4, y1 - 6);
+      });
+
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/jpeg", 0.9);
+      a.download = "safestreet_detection_result.jpg";
+      a.click();
+    };
+    img.src = preview;
   };
 
   const takeSnapshot = () => {
@@ -315,6 +362,7 @@ export default function Detector() {
       const boxHeight = ((y2 - y1) / height) * 100;
       
       const color = CLASS_COLORS[det.class_name] || "#ffffff";
+      const translatedLabel = t(`label.${det.class_name}`);
 
       return (
         <div 
@@ -334,7 +382,7 @@ export default function Detector() {
             className="absolute top-0 left-0 -translate-y-full px-1.5 py-0.5 text-[9px] md:text-[11px] font-bold whitespace-nowrap text-white rounded-t-sm shadow-sm"
             style={{ backgroundColor: color }}
           >
-            {det.class_name.replace('_', ' ')} {Math.round(det.confidence * 100)}%
+            {translatedLabel} {Math.round(det.confidence * 100)}%
           </span>
         </div>
       );
@@ -350,7 +398,7 @@ export default function Detector() {
       return (
         <p className="text-zinc-400 animate-pulse flex items-center gap-2 text-sm md:text-base">
           <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
-          Processing...
+          {t("detect.processing")}
         </p>
       );
     }
@@ -361,17 +409,17 @@ export default function Detector() {
       <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
         <div className="grid grid-cols-2 gap-3 md:gap-4">
           <div className="bg-black/50 p-3 md:p-4 rounded-xl border border-zinc-800">
-            <p className="text-xs md:text-sm text-zinc-400 mb-1">Inference</p>
+            <p className="text-xs md:text-sm text-zinc-400 mb-1">{t("detect.inferenceTime")}</p>
             <p className="text-lg md:text-2xl font-bold text-white">{targetResult.inference_ms.toFixed(1)} <span className="text-xs md:text-sm text-zinc-500 font-normal">ms</span></p>
           </div>
           <div className="bg-black/50 p-3 md:p-4 rounded-xl border border-zinc-800">
-            <p className="text-xs md:text-sm text-zinc-400 mb-1">Objects</p>
+            <p className="text-xs md:text-sm text-zinc-400 mb-1">{t("detect.objectsDetected")}</p>
             <p className="text-lg md:text-2xl font-bold text-white">{targetResult.detections.length}</p>
           </div>
         </div>
 
         <div>
-          <h4 className="text-xs md:text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-2 md:mb-3">Detected Objects</h4>
+          <h4 className="text-xs md:text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-2 md:mb-3">{t("detect.objectsDetected")}</h4>
           {targetResult.detections.length === 0 ? (
             <p className="text-zinc-500 text-sm">No objects detected.</p>
           ) : (
@@ -383,7 +431,7 @@ export default function Detector() {
                       className="w-2 h-2 md:w-3 md:h-3 rounded-full shrink-0" 
                       style={{ backgroundColor: CLASS_COLORS[det.class_name] || "#ffffff" }}
                     />
-                    <span className="text-zinc-200 capitalize text-xs md:text-sm truncate">{det.class_name.replace('_', ' ')}</span>
+                    <span className="text-zinc-200 capitalize text-xs md:text-sm truncate">{t(`label.${det.class_name}`)}</span>
                   </div>
                   <span className="text-zinc-400 text-xs md:text-sm font-mono shrink-0">{Math.round(det.confidence * 100)}%</span>
                 </li>
@@ -405,7 +453,7 @@ export default function Detector() {
             activeTab === "image" ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white"
           }`}
         >
-          Image
+          {t("detect.uploadImage")}
         </button>
         <button 
           onClick={() => setActiveTab("camera")} 
@@ -414,7 +462,7 @@ export default function Detector() {
           }`}
         >
           {isLive && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>}
-          Camera
+          {t("detect.liveVideo")}
         </button>
       </div>
 
@@ -445,8 +493,8 @@ export default function Detector() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </div>
-            <h3 className="text-lg md:text-xl font-semibold text-white mb-1 md:mb-2 text-center">Upload Image or Capture</h3>
-            <p className="text-xs md:text-sm text-zinc-400 text-center">Click to browse, drag & drop, or use phone camera<br/>(JPEG, PNG)</p>
+            <h3 className="text-lg md:text-xl font-semibold text-white mb-1 md:mb-2 text-center">{t("detect.chooseImage")}</h3>
+            <p className="text-xs md:text-sm text-zinc-400 text-center">(JPEG, PNG)</p>
           </div>
 
           {preview && (
@@ -460,7 +508,18 @@ export default function Detector() {
                   </div>
                 </div>
                 
-                <div className="flex justify-end">
+                <div className="flex flex-col sm:flex-row justify-end gap-3">
+                  {result && (
+                    <button 
+                      onClick={handleDownloadImage}
+                      className="w-full md:w-auto px-6 py-3 rounded-xl md:rounded-full bg-zinc-800 text-white font-semibold hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 border border-zinc-700"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      {t("detect.downloadImage")}
+                    </button>
+                  )}
                   <button 
                     onClick={handleUpload}
                     disabled={loading}
@@ -472,7 +531,7 @@ export default function Detector() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
                     )}
-                    {loading ? "Processing..." : "Run Detection"}
+                    {loading ? t("detect.processing") : "Run Detection"}
                   </button>
                 </div>
               </div>
@@ -557,10 +616,10 @@ export default function Detector() {
                   {isLive ? (
                     <>
                       <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full animate-pulse"></span>
-                      Stop
+                      {t("detect.stopCamera")}
                     </>
                   ) : (
-                    "▶ Start Live"
+                    "▶ " + t("detect.startCamera")
                   )}
                 </button>
               </div>
