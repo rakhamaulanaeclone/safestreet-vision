@@ -13,13 +13,16 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Menyalin file dependencies dan menginstal library python
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 # Tambahkan onnxruntime versi CPU agar Ultralytics dapat memproses model ONNX
 RUN pip install --no-cache-dir onnxruntime
 
 # Menyalin seluruh kode backend
-COPY . .
+COPY backend/ /app/
+
+# Copy model runs ke dalam container (Penting untuk Render.com)
+COPY runs/ /runs/
 
 # Menjalankan uvicorn server di port 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
