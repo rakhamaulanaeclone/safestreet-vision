@@ -242,7 +242,11 @@ def tulis_merged(semua: dict):
  
 def buat_yaml():
     isi = {
+<<<<<<< HEAD
         "path":  str(OUTPUT.resolve()),
+=======
+        "path":  "datasets/merged",
+>>>>>>> develop
         "train": "images/train",
         "val":   "images/val",
         "test":  "images/test",
@@ -309,4 +313,8 @@ def main():
     print("=" * 55)
  
 if __name__ == "__main__":
+<<<<<<< HEAD
     main()
+=======
+    main()
+>>>>>>> develop

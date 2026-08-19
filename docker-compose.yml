@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount folder 'runs' di root ke '/runs' di container agar Uvicorn bisa membaca model ONNX
+      - ./runs:/runs
+    environment:
+      # Variabel env untuk memastikan log ter-print ke console tanpa delay
+      - PYTHONUNBUFFERED=1
+      # Beri tahu backend lokasi model jika diperlukan (opsional, sebagai backup)
+      - SAFESTREET_MODEL_PATH=/runs/safestreet_v1_2/weights/best.onnx
+      # Secara default menggunakan CPU karena kita memakai image python:3.11-slim
+      - SAFESTREET_DEVICE=cpu
+    # Uncomment baris di bawah ini HANYA JIKA Anda sudah menginstal NVIDIA Container Toolkit di WSL
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      # Map port 5173 di Host (sesuai request) ke port 3000 di dalam container (port asli Next.js)
+      - "5173:3000"
+    environment:
+      - NODE_ENV=development
+      # Agar Next.js dapat mengenali rute backend Docker saat fetch data
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend

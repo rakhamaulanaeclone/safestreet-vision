@@ -13,6 +13,11 @@ CLASS_NAMES = [
     "vehicle_small", # 4
     "vehicle_large", # 5
     "pedestrian",    # 6
+<<<<<<< HEAD
+=======
+    "with_helmet",    # 7
+    "without_helmet", # 8
+>>>>>>> develop
 ]
 
 def check_bbox_validity(parts, line_idx):
