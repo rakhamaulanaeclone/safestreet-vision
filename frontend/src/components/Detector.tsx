@@ -87,14 +87,23 @@ export default function Detector() {
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
   const [isLive, setIsLive] = useState(false);
   const [liveResult, setLiveResult] = useState<PredictionResponse | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
 
   const isMounted = useRef(true);
 
   useEffect(() => {
     isMounted.current = true;
+    
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
     return () => {
       isMounted.current = false;
       stopCamera();
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
 
@@ -310,33 +319,16 @@ export default function Detector() {
     img.src = preview;
   };
 
-  const takeSnapshot = () => {
-    if (!videoRef.current || !canvasRef.current) return;
+  const toggleFullscreen = () => {
+    if (!videoContainerRef.current) return;
     
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    
-    if (video.videoWidth === 0) return;
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      
-      const snapshotFile = new File([blob], "snapshot.jpg", { type: "image/jpeg" });
-      setFile(snapshotFile);
-      if (preview) URL.revokeObjectURL(preview);
-      setPreview(URL.createObjectURL(snapshotFile));
-      setResult(null);
-      setError(null);
-      
-      setActiveTab("image");
-    }, "image/jpeg", 1.0);
+    if (!document.fullscreenElement) {
+      videoContainerRef.current.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
   };
 
   const renderBoundingBoxes = (targetResult: PredictionResponse | null, isLiveFeed: boolean = false) => {
@@ -489,7 +481,6 @@ export default function Detector() {
               ref={fileInputRef} 
               className="hidden" 
               accept="image/*"
-              capture="environment"
               onChange={handleFileChange}
             />
             <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-3 md:mb-4 group-hover:scale-110 transition-transform">
@@ -553,7 +544,10 @@ export default function Detector() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-2 space-y-4">
             
-            <div className="flex justify-center rounded-xl md:rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-2xl relative min-h-[250px] md:min-h-[300px] w-full">
+            <div 
+              ref={videoContainerRef} 
+              className={`flex justify-center rounded-xl md:rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-2xl relative min-h-[250px] md:min-h-[300px] w-full ${isFullscreen ? 'h-screen w-screen rounded-none border-none' : ''}`}
+            >
               {!isStreamReady && !error && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500 p-4 text-center">
                   {isLive ? (
@@ -575,13 +569,13 @@ export default function Detector() {
                 </div>
               )}
               
-              <div className="relative inline-flex max-w-full">
+              <div className={`relative inline-flex max-w-full ${isFullscreen ? 'h-full flex items-center justify-center' : ''}`}>
                 <video 
                   ref={videoRef} 
                   autoPlay 
                   playsInline 
                   muted 
-                  className="max-h-[50vh] md:max-h-[70vh] w-auto max-w-full block" 
+                  className={`w-auto max-w-full block ${isFullscreen ? 'max-h-screen object-contain' : 'max-h-[50vh] md:max-h-[70vh]'}`}
                 />
                 
                 <div className="absolute inset-0">
@@ -603,11 +597,19 @@ export default function Detector() {
               
               <div className="flex flex-1 sm:flex-none gap-2 md:gap-3">
                 <button 
-                  onClick={takeSnapshot}
+                  onClick={toggleFullscreen}
                   disabled={!isLive}
                   className="flex-1 sm:flex-none px-3 md:px-5 py-2.5 rounded-lg border border-zinc-700 text-white text-sm md:text-base font-semibold hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex justify-center items-center gap-1.5"
                 >
-                  <span className="text-base md:text-lg">📸</span> Snap
+                  {isFullscreen ? (
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20V15H4M15 4V9H20M4 9H9V4M20 15H15V20" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4H8M16 4H20V8M20 16V20H16M8 20H4V16" />
+                    </svg>
+                  )}
                 </button>
                 <button 
                   onClick={toggleLive}
