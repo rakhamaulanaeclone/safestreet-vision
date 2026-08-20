@@ -191,7 +191,8 @@ export default function Detector() {
         const formData = new FormData();
         formData.append("file", blob, "frame.jpg");
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const RAW_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const API_URL = RAW_URL.replace(/\/$/, "");
         const response = await fetch(`${API_URL}/predict/video-frame`, {
           method: "POST",
           body: formData,
@@ -244,7 +245,8 @@ export default function Detector() {
     formData.append("file", file);
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const RAW_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const API_URL = RAW_URL.replace(/\/$/, "");
       const response = await fetch(`${API_URL}/predict/image`, {
         method: "POST",
         body: formData,
