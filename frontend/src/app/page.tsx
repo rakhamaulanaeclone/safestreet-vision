@@ -17,7 +17,7 @@ export default function Home() {
       {/* Optimized Background Gradients */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.12),_transparent_50%),radial-gradient(circle_at_bottom_right,_rgba(147,51,234,0.12),_transparent_50%)]" />
 
-      <div className="z-10 flex flex-col items-center text-center max-w-4xl space-y-8 min-h-[90vh] justify-center">
+      <div className="z-10 flex flex-col items-center text-center max-w-4xl space-y-8 min-h-[90vh] justify-center pt-20 md:pt-0">
         <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-500">
           {t("home.title")}
         </h1>
