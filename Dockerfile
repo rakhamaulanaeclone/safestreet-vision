@@ -17,5 +17,5 @@ RUN pip install --no-cache-dir onnxruntime
 COPY backend/ /app/
 COPY runs/ /runs/
 
-# Hugging Face Spaces mewajibkan aplikasi berjalan di port 7860
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Railway dan PaaS lain menyuntikkan port melalui environment variable PORT (default 8000)
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
