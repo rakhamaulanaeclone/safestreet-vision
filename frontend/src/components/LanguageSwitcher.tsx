@@ -6,7 +6,7 @@ export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="fixed top-6 right-6 z-50 flex space-x-2">
+    <div className="absolute top-6 right-6 z-50 flex space-x-2">
       <button
         onClick={() => setLanguage("en")}
         className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${

@@ -77,6 +77,7 @@ export default function Detector() {
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Camera State
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -473,8 +474,7 @@ export default function Detector() {
       {activeTab === "image" && (
         <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div 
-            className="relative flex flex-col items-center justify-center p-8 md:p-12 border-2 border-dashed border-zinc-700 rounded-2xl md:rounded-3xl bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors cursor-pointer group"
-            onClick={() => fileInputRef.current?.click()}
+            className="relative flex flex-col items-center justify-center p-6 md:p-10 border-2 border-dashed border-zinc-700 rounded-2xl md:rounded-3xl bg-zinc-900/50 hover:bg-zinc-900/80 transition-colors group"
           >
             <input 
               type="file" 
@@ -483,11 +483,42 @@ export default function Detector() {
               accept="image/*"
               onChange={handleFileChange}
             />
-            <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-3 md:mb-4 group-hover:scale-110 transition-transform">
-              <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
+            <input 
+              type="file" 
+              ref={cameraInputRef} 
+              className="hidden" 
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileChange}
+            />
+            
+            <div className="flex gap-4 md:gap-6 mb-4 md:mb-6 w-full justify-center">
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="flex flex-col items-center gap-2 md:gap-3 p-4 md:p-6 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 transition-colors border border-zinc-700 hover:border-zinc-500 w-32 md:w-40"
+              >
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+                  <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-white">Gallery</span>
+              </button>
+              
+              <button 
+                onClick={() => cameraInputRef.current?.click()}
+                className="flex flex-col items-center gap-2 md:gap-3 p-4 md:p-6 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 transition-colors border border-zinc-700 hover:border-zinc-500 w-32 md:w-40"
+              >
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-white">Camera</span>
+              </button>
             </div>
+
             <h3 className="text-lg md:text-xl font-semibold text-white mb-1 md:mb-2 text-center">{t("detect.chooseImage")}</h3>
             <p className="text-xs md:text-sm text-zinc-400 text-center">(JPEG, PNG)</p>
           </div>
