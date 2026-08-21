@@ -44,7 +44,7 @@ Total annotations: 35,780 across 9 classes.
 
 ```text
 SafeStreet Vision/
-|-- datasets/                  # ignored except datasets/merged/data.yaml
+|-- datasets/                  
 |   |-- RAD/
 |   |-- RoadDamage/
 |   |-- HelmetMain/
@@ -53,7 +53,7 @@ SafeStreet Vision/
 |       |-- images/train, val, test/
 |       |-- labels/train, val, test/
 |       `-- data.yaml
-|-- runs/                      # ignored YOLO training/evaluation outputs
+|-- runs/                      #  YOLO training/evaluation outputs
 |-- backend/
 |   |-- app/
 |   |   |-- main.py
@@ -220,14 +220,9 @@ Validated HTTP sample for `/predict/image` using a test image:
 
 The complete application (FastAPI backend + Next.js frontend) is containerized and orchestrated using Docker Compose. The backend automatically mounts the localized YOLOv8 ONNX model from the `runs/` directory.
 
-To build and run the services:
 
-```bash
-docker compose up --build
-```
-
-- **Frontend:** http://localhost:5173 (Mapped from container port 3000)
-- **Backend API:** http://localhost:8000
+- **Frontend:** https://safestreet-vision.vercel.app
+- **Backend API:** https://safestreet-vision-production.up.railway.app
 
 Features included in the frontend:
 - **Real-time Inference:** Access your webcam directly from the browser.

@@ -1,22 +1,19 @@
-# ─────────────────────────────────────────────────────────────
-# .gitignore untuk proyek YOLOv8 Road Damage + Helmet Detection
-# ─────────────────────────────────────────────────────────────
-
-# ── Dataset ──────────
+# Dataset
 datasets/*
 !datasets/merged/
 datasets/merged/*
 !datasets/merged/data.yaml
-*.jpg
-*.jpeg
-*.png
-*.bmp
-*.webp
-*.mp4
-*.avi
-*.mov
+# Root level test images and videos (mencegah mengabaikan aset gambar di folder frontend/public)
+/*.jpg
+/*.jpeg
+/*.png
+/*.bmp
+/*.webp
+/*.mp4
+/*.avi
+/*.mov
 
-# ── YOLO training output ──────────────────────────────────────
+# YOLO training output
 runs/*
 weights/
 *.pt
@@ -29,7 +26,7 @@ runs/safestreet_v1_2/*
 runs/safestreet_v1_2/weights/*
 !runs/safestreet_v1_2/weights/best.onnx
 
-# ── Python ────────────────────────────────────────────────────
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -42,19 +39,16 @@ dist/
 build/
 .eggs/
 
-# ── Jupyter Notebook ──────────────────────────────────────────
+# Jupyter Notebook 
 .ipynb_checkpoints/
 
-# ── Environment ───────────────────────────────────────────────
+# Environment 
 .env
 .env.local
 *.env
 
-# Local notes / nested working copies
-SafeStreet Vision.md
-github-git/
 
-# ── IDE ───────────────────────────────────────────────────────
+# IDE 
 .vscode/settings.json
 .vscode/launch.json
 .idea/
@@ -63,17 +57,17 @@ github-git/
 .DS_Store
 Thumbs.db
 
-# ── Logs ─────────────────────────────────────────────────────
+# Logs
 *.log
 logs/
 mlruns/
 wandb/
 
-# ── Backend build ─────────────────────────────────────────────
+# Backend build 
 backend/__pycache__/
 backend/.venv/
 
-# ── Frontend build ────────────────────────────────────────────
+# Frontend build 
 frontend/node_modules/
 frontend/dist/
 frontend/.next/
