@@ -577,7 +577,7 @@ export default function Detector() {
             
             <div 
               ref={videoContainerRef} 
-              className={`flex justify-center rounded-xl md:rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-2xl relative min-h-[250px] md:min-h-[300px] w-full ${isFullscreen ? 'h-screen w-screen rounded-none border-none' : ''}`}
+              className={`flex items-center justify-center rounded-xl md:rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-2xl relative min-h-[250px] md:min-h-[300px] w-full ${isFullscreen ? 'h-screen w-screen rounded-none border-none' : ''}`}
             >
               {!isStreamReady && !error && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500 p-4 text-center">
@@ -600,13 +600,13 @@ export default function Detector() {
                 </div>
               )}
               
-              <div className={`relative inline-flex max-w-full ${isFullscreen ? 'h-full flex items-center justify-center' : ''}`}>
+              <div className="relative inline-flex max-w-full items-center justify-center">
                 <video 
                   ref={videoRef} 
                   autoPlay 
                   playsInline 
                   muted 
-                  className={`w-auto max-w-full block ${isFullscreen ? 'max-h-screen object-contain' : 'max-h-[50vh] md:max-h-[70vh]'}`}
+                  className={`w-auto max-w-full block ${isFullscreen ? 'max-h-screen' : 'max-h-[50vh] md:max-h-[70vh]'}`}
                 />
                 
                 <div className="absolute inset-0">
