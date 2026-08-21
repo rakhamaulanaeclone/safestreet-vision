@@ -231,13 +231,13 @@ Features included in the frontend:
 
 ## Roadmap
 
-- Phase 0: Dataset pipeline - complete
-- Phase 1: YOLOv8 training - complete
-- Phase 2: Evaluation and export - complete
-- Phase 3: FastAPI backend - complete
-- Phase 4: React frontend - complete
-- Phase 5: Docker Compose and integration - complete
-- Phase 6: Deployment and portfolio polish - planned
+- Phase 0: Dataset pipeline 
+- Phase 1: YOLOv8 training 
+- Phase 2: Evaluation and export 
+- Phase 3: FastAPI backend 
+- Phase 4: React frontend
+- Phase 5: Docker Compose and integration 
+- Phase 6: Deployment 
 
 ## License
 
