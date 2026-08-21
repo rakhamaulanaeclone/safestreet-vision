@@ -79,11 +79,11 @@ export default function Detector() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  // Camera State
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const trackedDetectionsRef = useRef<TrackedDetection[]>([]); // Menyimpan riwayat pelacakan frame
+  const trackedDetectionsRef = useRef<TrackedDetection[]>([]); 
   const [isStreamReady, setIsStreamReady] = useState(false);
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
   const [isLive, setIsLive] = useState(false);
@@ -116,7 +116,6 @@ export default function Detector() {
   }, [activeTab]);
 
   useEffect(() => {
-    // Jika kamera sedang menyala dan facingMode diubah, restart kamera
     if (activeTab === "camera" && streamRef.current) {
       startCamera();
     }
@@ -124,7 +123,6 @@ export default function Detector() {
   }, [facingMode]);
 
   const startCamera = async () => {
-    // Jangan panggil stopCamera() secara penuh di sini agar isLive tidak keriset ke false
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -160,14 +158,14 @@ export default function Detector() {
       streamRef.current = null;
       if (isMounted.current) setIsStreamReady(false);
     }
-    trackedDetectionsRef.current = []; // Reset tracker on camera stop
+    trackedDetectionsRef.current = []; 
   };
 
   const toggleLive = async () => {
     if (isLive) {
       stopCamera();
     } else {
-      setIsLive(true); // Set true di awal agar animasi UI "Requesting..." muncul
+      setIsLive(true); // Set true di awal agar animasi UI "Requesting..." 
       await startCamera();
     }
   };

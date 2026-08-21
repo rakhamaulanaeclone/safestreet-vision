@@ -242,5 +242,4 @@ Features included in the frontend:
 ## License
 
 Code: MIT
-
 Datasets: see the Dataset table. Roboflow datasets require CC BY 4.0 attribution.
