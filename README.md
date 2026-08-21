@@ -190,13 +190,6 @@ Latest verification result:
 | Max box coordinate delta | 1.49 px |
 | Coarse match | true |
 
-## FastAPI Backend
-
-Run the inference API from the project root:
-
-```bash
-uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
-```
 
 Available endpoints:
 
@@ -216,7 +209,7 @@ Validated HTTP sample for `/predict/image` using a test image:
 | First class | `vehicle_small` |
 | First confidence | 0.8188 |
 
-## Docker Deployment
+## Deployment
 
 The complete application (FastAPI backend + Next.js frontend) is containerized and orchestrated using Docker Compose. The backend automatically mounts the localized YOLOv8 ONNX model from the `runs/` directory.
 
@@ -242,4 +235,5 @@ Features included in the frontend:
 ## License
 
 Code: MIT
+
 Datasets: see the Dataset table. Roboflow datasets require CC BY 4.0 attribution.
